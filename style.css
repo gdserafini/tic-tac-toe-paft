@@ -10,6 +10,9 @@
     cursor: pointer;
     display: flex;
     border: 2px solid black;
+    font-size: 150px;
+    color: black;
+    font-family: Arial;
 }
 
 .div-elem.x,

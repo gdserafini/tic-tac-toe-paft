@@ -21,6 +21,7 @@ const iaPlayer = Oplayer;
 const divElem = document.querySelectorAll(".div-elem");
 const gameBoard = document.querySelector("#board-game");
 const buttomRestart = document.querySelector("#buttom-restart");
+let plays = ["","","","","","","","",""];
 
 function swapPlayer(){
     if(currentPlayer === Xplayer) currentPlayer = Oplayer;
@@ -28,20 +29,11 @@ function swapPlayer(){
 }
 
 function isDraw(){
-    return [...divElem].every(elem => {
-        return elem.classList.contains(Xplayer) || 
-            elem.classList.contains(Oplayer);
-    });
+    
 }
 
 function win(currentPlayer){
-    return winPositions.some(c => {
-        return c.every(i => {
-            return divElem[i]
-                .classList
-                .contains(currentPlayer);
-        });
-    });
+    
 }
 
 //se o modo for 2 jogadores define o primeiro aleatóriamente
@@ -55,9 +47,13 @@ function checksEnd(){
     else if(win(currentPlayer)) printWinnerMsg(currentPlayer);
 }
 
+function getIndexOf(element){
+    return [].indexOf(divElem, element);
+}
+
 //coloca o "desenho" do jogador no campo
 function click(element){
-    element.target.classList.add(currentPlayer);
+    element.target.innerHTML = currentPlayer;
     checksEnd();
     swapPlayer();
 }
@@ -82,25 +78,9 @@ function restartGame(){
     buttomRestart.addEventListener("click", restartClick);
 }
 
-function iaClick(){
-    //algoritmo de jogada da ia
-    checksEnd();
-    swapPlayer();
-}
-
-function playIaMode(){
-    element.addEventListener(/* outros parâmentros, iaClicl */);
-}
-
-function playIa(element){
-    if(currentPlayer === player){ play(element); }
-    else{ playIaMode(element); }
-}
-
 //jogadas do jogador e ia alternadas
 function playWithIa(){
-    currentPlayer = player;
-    divElem.forEach(elem => { playIa(elem); });
+
 }
 
 function startGame(){ 
