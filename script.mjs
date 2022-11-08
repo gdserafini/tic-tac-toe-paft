@@ -108,7 +108,7 @@ function startGame(){
         const mode = defineMode();
 
         if(mode == ia){
-            playWithIa();
+            //playWithIa();
             break;
         }
         else if(mode == twoPlayers){
@@ -123,7 +123,4 @@ function startGame(){
 }
 
 startGame();
-restartGame();
-
-//aulas 6 (rev), 8, 9, 10, 11
-//funções usadas no código
+//restartGame();
