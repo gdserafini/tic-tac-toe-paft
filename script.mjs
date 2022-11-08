@@ -69,7 +69,7 @@ function playTwoPlayers(){
 }
 
 function restartClick(){
-    //limpa o campo
+    divElem.forEach(d => d.innerHTML = " ");
     startGame();
 }
 
@@ -103,4 +103,4 @@ function startGame(){
 }
 
 startGame();
-//restartGame();
+restartGame();
