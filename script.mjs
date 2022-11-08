@@ -18,9 +18,9 @@ const winPositions = [
 const player = Xplayer;
 const iaPlayer = Oplayer;
 //9 divElem do campo
-const divElem = document.querySelectorAll("[div-elem]");
-const gameBoard = document.querySelector("[board]");
-const buttomRestart = document.querySelector("[buttom]");
+const divElem = document.querySelectorAll(".div-elem");
+const gameBoard = document.querySelector("#board-game");
+const buttomRestart = document.querySelector("#buttom-restart");
 
 function swapPlayer(){
     if(currentPlayer === Xplayer) currentPlayer = Oplayer;
