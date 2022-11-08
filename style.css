@@ -1,0 +1,91 @@
+.body{
+    background: white;
+}
+
+.div-elem{
+    width: 150px;
+    height: 150px;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    border: 2px solid black;
+}
+
+.div-elem.x,
+.div-elem.o{
+    cursor: not-allowed;
+}
+
+.div-elem.x::after{
+    content: "X";
+    font-size: 150px;
+    margin-left: 25px;
+    color: black;
+    font-family: Arial;
+}
+
+.div-elem.o::after{
+    content: "O";
+    font-size: 150px;
+    margin-left: 25px;
+    color: black;
+    font-family: Arial;
+}
+
+#board-game{
+    width: 460px;
+    height: 460px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+
+#d1{
+    border-left: none;
+    border-top: none;
+}
+
+#d2{
+    border-top: none;
+}
+
+#d3{
+    border-top: none;
+    border-right: none;
+}
+
+#d4{
+    border-left: none;
+}
+
+#d6{
+    border-right: none;
+}
+
+#d7{
+    border-left: none;
+    border-bottom: none;
+}
+
+#d8{
+    border-bottom: none;
+}
+
+#d9{
+    border-bottom: none;
+    border-right: none;
+}
+
+#buttom-restart{
+    font-size: 20px;
+    margin-top: 50px;
+    margin-left: 140px;
+    font-family: Arial;
+}
+
+#title{
+    margin-left: 80px;
+    font-size: 50px;
+    font-family: Arial;
+}
