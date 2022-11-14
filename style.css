@@ -20,27 +20,6 @@
     color: black;
 }
 
-.div-elem.x,
-.div-elem.o{
-    cursor: not-allowed;
-}
-
-.div-elem.x::after{
-    content: "X";
-    font-size: 150px;
-    margin-left: 25px;
-    color: black;
-    font-family: Arial;
-}
-
-.div-elem.o::after{
-    content: "O";
-    font-size: 150px;
-    margin-left: 25px;
-    color: black;
-    font-family: Arial;
-}
-
 #board-game{
     width: 460px;
     height: 460px;

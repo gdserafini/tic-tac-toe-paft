@@ -1,9 +1,12 @@
 
 let currentPlayer;
+let end = false;
 const IA_MODE = 1; 
 const TWOP_MODE = 2;
 const X_PLAYER = "x"; 
 const O_PLAYER = "o";
+const IA_PLAYER = X_PLAYER;
+const PLAYER = O_PLAYER;
 let plays = ["","","","","","","","",""];
 const winPositions = [
     [0,1,2], [3,4,5], [6,7,8],
@@ -11,16 +14,15 @@ const winPositions = [
     [0,4,8], [2,4,6]
 ];
 const divElem = document.querySelectorAll(".div-elem");
-const buttomRestart = document.querySelector("#buttom-restart");
 const finalMsg = document.querySelector("#finalmsg");
 
 //mensagens finais
 function printDrawMsg(){ 
     finalMsg.textContent = "Deu velha -_-"; 
-}
+} 
 
-function printWinnerMsg(){
-    finalMsg.textContent = `Vencedor: ${currentPlayer}`;
+function printWinnerMsg(player){
+    finalMsg.textContent = `Vencedor: ${player}`;
 }
 
 //definiçoes de jogo
@@ -76,9 +78,18 @@ function win(base, list, item, occurrences = 3){
     return false;
 }
 
-function checksEnd(){
-    if(isDraw(plays)) printDrawMsg();
-    if(win(winPositions, plays, currentPlayer, 3)) printWinnerMsg();
+function checksEnd(player = currentPlayer){
+    if(isDraw(plays)) {
+        printDrawMsg();
+        end = true;
+        return true;
+    }
+    if(win(winPositions, plays, player, 3)) {
+        printWinnerMsg(player);
+        end = true;
+        return true;
+    }
+    return false;
 }
 
 function getIndexOf(element){
@@ -88,60 +99,59 @@ function getIndexOf(element){
 
 //loop de jogo
 //2 jogadores
-function click(element){
+function playTP(element){
+    if(end) return;
     element.target.textContent = currentPlayer;
     plays[getIndexOf(element)] = currentPlayer;
-    console.log(plays);
-    checksEnd();
-    swapPlayer();
-}
-
-function play(element){
-    element.addEventListener("click", click, {once: true});
-}
-
-function playTwoPlayers(){
-    divElem.forEach(elem => { play(elem); });
-}
-
-function clearPosition(element){
-    element.textContent = "";
-}
-//ia
-function playWithIa(){
-
-}
-
-//restart
-
-function clearPlays(){
-    for(let i = 0; i < plays.length; i++){
-        plays[i] = "";
+    if(!checksEnd()){
+        swapPlayer();
     }
 }
 
-function restartClick(){
-    divElem.forEach(d => clearPosition(d));
-    clearPlays();
-    finalMsg.textContent = "";
-    startGame();
+//ia
+function getRandomPosition(){
+    let count = 0;
+    while(true){
+        const id = Math.floor(Math.random() * 9);
+        if(plays[id] === "") return id;
+        count++;
+        if(count === 9) break;
+    }
 }
 
-function restartGame(){
-    buttomRestart.addEventListener("click", restartClick);
+function playIa(element){
+    if(end) return;
+    if(!checksEnd(IA_PLAYER)){
+        element.target.textContent = PLAYER;
+        plays[getIndexOf(element)] = PLAYER;
+    }
+
+    if(!checksEnd(PLAYER)){
+        const idIa = getRandomPosition();
+        divElem[idIa].textContent = IA_PLAYER;
+        plays[idIa] = IA_PLAYER;
+    }
+    if(end) return;
 }
+
+function playGame(click){
+    divElem.forEach(elem => {
+        elem.addEventListener("click", click, {once: true});
+    });
+}   
 
 function startGame(){ 
     while(true){
         const mode = defineMode();
 
         if(mode == IA_MODE){
-            //playWithIa();
+            currentPlayer = PLAYER;
+            playGame(playIa);
             break;
         }
         else if(mode == TWOP_MODE){
             definePlayer();
-            playTwoPlayers();
+            playGame(playTP);
             break;
         }
         else{
@@ -151,4 +161,3 @@ function startGame(){
 }
 
 startGame();
-restartGame();
