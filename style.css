@@ -15,6 +15,11 @@
     font-family: Arial;
 }
 
+#finalmsg{
+    font-size: 50px;
+    color: black;
+}
+
 .div-elem.x,
 .div-elem.o{
     cursor: not-allowed;
