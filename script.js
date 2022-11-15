@@ -16,35 +16,35 @@ const winPositions = [
 const divElem = document.querySelectorAll(".div-elem");
 const finalMsg = document.querySelector("#finalmsg");
 
-//mensagens finais
-function drawMsg(player){ 
-    finalMsg.textContent = "Deu velha -_-"; 
-} 
-
-function winnerMsg(player){
-    finalMsg.textContent = `Vencedor: ${player}`;
+//exibe a mensagem de vitória ou velha
+function printFinalMsg(msg){
+    finalMsg.textContent = msg;
+    end = true;
+    return true;
 }
 
-//definiçoes de jogo
+//define o modo
 function defineMode(){
     return prompt(`Selecione o tipo de jogo
         1 - para jogar contra a ia 2 - para 2 jogadores`);
 }
 
+//compara e troca
 function swapPlayer(){
     if(currentPlayer === X_PLAYER) currentPlayer = O_PLAYER;
     else currentPlayer = X_PLAYER;
 }
 
-function definePlayer(mode){    
-    if(mode === 1) currentPlayer = PLAYER;
-    else{
-        if(Math.floor(Math.random() * 2) === 1) currentPlayer = X_PLAYER;
-        else currentPlayer = O_PLAYER;
-    }
+//define no modo 2 players
+function definePlayer(){    
+    if(Math.floor(Math.random() * 2) === 1) currentPlayer = X_PLAYER;
+    else currentPlayer = O_PLAYER;
 }
 
-//verificações de vitório ou empate
+/*  
+    função genérica para verificar o número de ocorrências 
+    de um item em uma lista com determinada comparação
+*/
 function getCountPlays(list, compare, size){
     let count = 0;
     for(let i = 0; i < size; i++){
@@ -53,12 +53,14 @@ function getCountPlays(list, compare, size){
     return count;
 }
 
+//verifica se o número máximo de jogada foi feito(antes verifica se alguem venceu)
 function isDraw(list){
     if(getCountPlays(list, (list, i) => {
         return list[i] !== ""}, list.length) === 9) return true;
     return false;
 }
 
+//verifica se o número de posições do player nas posições de vitória somam 3
 function isWinPosition(base, list, item, occurrences = 3){
     if(getCountPlays(list, (list, i) => {
         return list[base[i]] === item
@@ -66,6 +68,7 @@ function isWinPosition(base, list, item, occurrences = 3){
     else return false;
 }
 
+//verifica se cada lista da lista de posições de vitória da match
 function isWin(base, list, item, occurrences = 3){
     for(let i = 0; i < base.length; i++){
         if(isWinPosition(base[i], list, item, occurrences)) return true;
@@ -73,32 +76,30 @@ function isWin(base, list, item, occurrences = 3){
     return false;
 }
 
-function printFinalMsg(functionMsg, player = currentPlayer){
-    functionMsg(player);
-    end = true;
-    return true;
-}
-
+//verifica se o jogo terminou dando velha ou algum vencedor
 function checksEnd(player = currentPlayer){
-    if(isDraw(plays)) return printFinalMsg(drawMsg);
-    if(isWin(winPositions, plays, player, 3)) return printFinalMsg(winnerMsg, player);
+    if(isDraw(plays)) return printFinalMsg("Deu velha -_-");
+    //confere se alguma combinação de vitória foi feita pelo player
+    if(isWin(winPositions, plays, player)) {
+        return printFinalMsg(`Vencedor: ${player.toUpperCase()}`);
+    }
     return false;
 }
 
+//retorna index de um elemeto de node list
 function getIndexOf(element){
-    let id = element.target.id;
-    return parseInt(id.slice(1)) - 1;
+    //pega último digito da string id e retorna como int-1
+    return parseInt(element.target.id.slice(1)) -1;
 }
 
-//loop de jogo
-//2 jogadores
+//verifica se acabou e joga
 function playTP(element){
     if(end) return;
     playerPlay(element);
     if(!checksEnd()) swapPlayer();
 }
 
-//ia
+//retorna um id de uma posição não jogada
 function getRandomPosition(){
     let count = 0;
     while(true){
@@ -109,17 +110,25 @@ function getRandomPosition(){
     }
 }
 
+//jogada "tipo" ia
 function iaPlay(){
     const idIa = getRandomPosition();
     divElem[idIa].textContent = IA_PLAYER;
     plays[idIa] = IA_PLAYER;
 }
 
+//jogada "tipo" jogador
 function playerPlay(element, player = currentPlayer){
+    //coloca texto no html
     element.target.textContent = player;
+    //coloca texto nas posições jogadas
     plays[getIndexOf(element)] = player;
 }
 
+/*
+    em cada iteração do laço 1° verifica se acabou para não poder jogar mais
+    depois verifica se o currentPlayer venceu ou deu velha, se não o outro jogador joga
+*/
 function playIa(element){
     if(end) return;
     if(!checksEnd(IA_PLAYER)) { playerPlay(element, PLAYER); }
@@ -127,23 +136,35 @@ function playIa(element){
     if(end) return;
 }
 
+/*
+    passa por todos os elementos do (campos) - divs - adicionando clicks
+    com o click é executado o "tipo" de click - ia ou 2 players
+*/
 function playGame(play){
     divElem.forEach(elem => {
         elem.addEventListener("click", play, {once: true});
     });
 }  
 
+/*
+    starta o jogo selecionando o modo de jogo
+    1 = ia, 2 = 2 players
+    primeiro é definido o jogador para cada modo
+    edepois xecuta playGame passando como parâmetro o modo de jogo
+    também verifica se o número digitado está correto (1 ou 2)
+*/
 function startGame(){ 
     while(true){
         const mode = defineMode();
 
         if(mode == IA_MODE){
-            definePlayer(mode);
+            //jogador começa
+            currentPlayer = PLAYER;
             playGame(playIa);
             break;
         }
         else if(mode == TWOP_MODE){
-            definePlayer(mode);
+            definePlayer();
             playGame(playTP);
             break;
         }
