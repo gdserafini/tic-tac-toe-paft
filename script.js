@@ -78,11 +78,11 @@ function isWin(base, list, item, occurrences = 3){
 
 //verifica se o jogo terminou dando velha ou algum vencedor
 function checksEnd(player = currentPlayer){
-    if(isDraw(plays)) return printFinalMsg("Deu velha -_-");
     //confere se alguma combinação de vitória foi feita pelo player
     if(isWin(winPositions, plays, player)) {
         return printFinalMsg(`Vencedor: ${player.toUpperCase()}`);
     }
+    if(isDraw(plays)) return printFinalMsg("Deu velha -_-");
     return false;
 }
 

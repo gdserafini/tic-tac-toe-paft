@@ -18,6 +18,7 @@
 #finalmsg{
     font-size: 50px;
     color: black;
+    margin-left: 740px;
 }
 
 #board-game{
@@ -25,7 +26,10 @@
     height: 460px;
     display: flex;
     flex-wrap: wrap;
-    align-content: flex-start;
+    /* align-content: flex-start; */
+    align-content: center;
+    align-items: center;
+    margin-left: 650px;
 }
 
 #d1{
@@ -67,12 +71,12 @@
 #button-restart{
     font-size: 20px;
     margin-top: 50px;
-    margin-left: 140px;
+    margin-left: 790px;
     font-family: Arial;
 }
 
 #title{
-    margin-left: 80px;
+    margin-left: 680px;
     font-size: 50px;
     font-family: Arial;
 }
