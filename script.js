@@ -17,11 +17,11 @@ const divElem = document.querySelectorAll(".div-elem");
 const finalMsg = document.querySelector("#finalmsg");
 
 //mensagens finais
-function printDrawMsg(){ 
+function drawMsg(player){ 
     finalMsg.textContent = "Deu velha -_-"; 
 } 
 
-function printWinnerMsg(player){
+function winnerMsg(player){
     finalMsg.textContent = `Vencedor: ${player}`;
 }
 
@@ -36,59 +36,52 @@ function swapPlayer(){
     else currentPlayer = X_PLAYER;
 }
 
-function definePlayer(){    
-    if(Math.floor(Math.random() * 2) === 1) currentPlayer = X_PLAYER;
-    else currentPlayer = O_PLAYER;
+function definePlayer(mode){    
+    if(mode === 1) currentPlayer = PLAYER;
+    else{
+        if(Math.floor(Math.random() * 2) === 1) currentPlayer = X_PLAYER;
+        else currentPlayer = O_PLAYER;
+    }
 }
 
 //verificações de vitório ou empate
-
-function checksDraw(){
+function getCountPlays(list, compare, size){
     let count = 0;
-    for(let i = 0; i < 9; i++){
-        if(plays[i] !== "") count++;
+    for(let i = 0; i < size; i++){
+        if(compare(list, i)) count++;
     }
-
-    if(count >= 8) return true;
-    else return false;
+    return count;
 }
 
 function isDraw(list){
-    let count = 0;
-    for(let i = 0; i < list.length; i++){
-        if(list[i] !== "") count++;
-    }
-    if(count === 9) return true;
+    if(getCountPlays(list, (list, i) => {
+        return list[i] !== ""}, list.length) === 9) return true;
     return false;
 }
 
-function isWinPosition(base, list, item, occurrences){
-    let count = 0;
-    for(let i = 0; i < base.length; i++){
-        if(list[base[i]] === item) count++;
-    }
-    if(count === occurrences) return true;
+function isWinPosition(base, list, item, occurrences = 3){
+    if(getCountPlays(list, (list, i) => {
+        return list[base[i]] === item
+    }, base.length) === occurrences) return true;
     else return false;
 }
 
-function win(base, list, item, occurrences = 3){
+function isWin(base, list, item, occurrences = 3){
     for(let i = 0; i < base.length; i++){
         if(isWinPosition(base[i], list, item, occurrences)) return true;
     }
     return false;
 }
 
+function printFinalMsg(functionMsg, player = currentPlayer){
+    functionMsg(player);
+    end = true;
+    return true;
+}
+
 function checksEnd(player = currentPlayer){
-    if(isDraw(plays)) {
-        printDrawMsg();
-        end = true;
-        return true;
-    }
-    if(win(winPositions, plays, player, 3)) {
-        printWinnerMsg(player);
-        end = true;
-        return true;
-    }
+    if(isDraw(plays)) return printFinalMsg(drawMsg);
+    if(isWin(winPositions, plays, player, 3)) return printFinalMsg(winnerMsg, player);
     return false;
 }
 
@@ -101,11 +94,8 @@ function getIndexOf(element){
 //2 jogadores
 function playTP(element){
     if(end) return;
-    element.target.textContent = currentPlayer;
-    plays[getIndexOf(element)] = currentPlayer;
-    if(!checksEnd()){
-        swapPlayer();
-    }
+    playerPlay(element);
+    if(!checksEnd()) swapPlayer();
 }
 
 //ia
@@ -119,38 +109,41 @@ function getRandomPosition(){
     }
 }
 
+function iaPlay(){
+    const idIa = getRandomPosition();
+    divElem[idIa].textContent = IA_PLAYER;
+    plays[idIa] = IA_PLAYER;
+}
+
+function playerPlay(element, player = currentPlayer){
+    element.target.textContent = player;
+    plays[getIndexOf(element)] = player;
+}
+
 function playIa(element){
     if(end) return;
-    if(!checksEnd(IA_PLAYER)){
-        element.target.textContent = PLAYER;
-        plays[getIndexOf(element)] = PLAYER;
-    }
-
-    if(!checksEnd(PLAYER)){
-        const idIa = getRandomPosition();
-        divElem[idIa].textContent = IA_PLAYER;
-        plays[idIa] = IA_PLAYER;
-    }
+    if(!checksEnd(IA_PLAYER)) { playerPlay(element, PLAYER); }
+    if(!checksEnd(PLAYER)) { iaPlay(); }
     if(end) return;
 }
 
-function playGame(click){
+function playGame(play){
     divElem.forEach(elem => {
-        elem.addEventListener("click", click, {once: true});
+        elem.addEventListener("click", play, {once: true});
     });
-}   
+}  
 
 function startGame(){ 
     while(true){
         const mode = defineMode();
 
         if(mode == IA_MODE){
-            currentPlayer = PLAYER;
+            definePlayer(mode);
             playGame(playIa);
             break;
         }
         else if(mode == TWOP_MODE){
-            definePlayer();
+            definePlayer(mode);
             playGame(playTP);
             break;
         }
